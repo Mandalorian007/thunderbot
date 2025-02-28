@@ -8,13 +8,8 @@ import { loadClanConfig } from '../utils/config';
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('grant-clan-access')
+        .setName('clan-grant-access')
         .setDescription('Grant clan access to a user')
-        .addUserOption(option =>
-            option.setName('user')
-                .setDescription('The user to grant clan access to')
-                .setRequired(true)
-        )
         .addStringOption(option =>
             option.setName('clan')
                 .setDescription('The clan to grant access to')
@@ -23,6 +18,11 @@ module.exports = {
                     name: clan.name,
                     value: clan.id
                 })))
+        )
+        .addUserOption(option =>
+            option.setName('user')
+                .setDescription('The user to grant clan access to')
+                .setRequired(true)
         ),
 
     async execute(interaction: ChatInputCommandInteraction) {

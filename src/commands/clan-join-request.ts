@@ -12,7 +12,7 @@ import { loadClanConfig } from '../utils/config';
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('join-clan')
+        .setName('clan-join-request')
         .setDescription('Request to join a clan')
         .addStringOption(option =>
             option.setName('clan')

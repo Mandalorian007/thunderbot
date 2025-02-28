@@ -8,13 +8,8 @@ import { loadClanConfig } from '../utils/config';
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('revoke-clan-access')
+        .setName('clan-revoke-access')
         .setDescription('Revoke clan access from a user')
-        .addUserOption(option =>
-            option.setName('user')
-                .setDescription('The user to revoke clan access from')
-                .setRequired(true)
-        )
         .addStringOption(option =>
             option.setName('clan')
                 .setDescription('The clan to revoke access from')
@@ -23,6 +18,11 @@ module.exports = {
                     name: clan.name,
                     value: clan.id
                 })))
+        )
+        .addUserOption(option =>
+            option.setName('user')
+                .setDescription('The user to revoke clan access from')
+                .setRequired(true)
         ),
 
     async execute(interaction: ChatInputCommandInteraction) {

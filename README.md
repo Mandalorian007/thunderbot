@@ -50,7 +50,7 @@ pnpm run start
 Currently, the bot supports the following commands:
 
 - `/ping` - Check if the bot is responsive
-- `/join-clan` - Request to join a clan
+- `/clan-join-request` - Request to join a clan
   - Required options:
     - `clan` - Select which clan to join from available choices
     - `ign` - Your in-game name
@@ -58,7 +58,7 @@ Currently, the bot supports the following commands:
     1. Request is sent to clan's approval channel
     2. Clan approvers can accept/deny the request
     3. User receives a DM notification of acceptance/denial
-- `/grant-clan-access` - Grant clan access to a user (Clan Approvers only)
+- `/clan-grant-access` - Grant clan access to a user (Clan Approvers only)
   - Required options:
     - `user` - The user to grant access to
     - `clan` - Select which clan to grant access to
@@ -66,7 +66,7 @@ Currently, the bot supports the following commands:
     1. Validates approver has permissions for the selected clan
     2. Grants the clan role if user doesn't already have it
     3. Logs the action in the clan's approval channel
-- `/revoke-clan-access` - Revoke clan access from a user (Clan Approvers only)
+- `/clan-revoke-access` - Revoke clan access from a user (Clan Approvers only)
   - Required options:
     - `user` - The user to revoke access from
     - `clan` - Select which clan to revoke access from
