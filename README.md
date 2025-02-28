@@ -58,6 +58,22 @@ Currently, the bot supports the following commands:
     1. Request is sent to clan's approval channel
     2. Clan approvers can accept/deny the request
     3. User receives a DM notification of acceptance/denial
+- `/grant-clan-access` - Grant clan access to a user (Clan Approvers only)
+  - Required options:
+    - `user` - The user to grant access to
+    - `clan` - Select which clan to grant access to
+  - Process:
+    1. Validates approver has permissions for the selected clan
+    2. Grants the clan role if user doesn't already have it
+    3. Logs the action in the clan's approval channel
+- `/revoke-clan-access` - Revoke clan access from a user (Clan Approvers only)
+  - Required options:
+    - `user` - The user to revoke access from
+    - `clan` - Select which clan to revoke access from
+  - Process:
+    1. Validates approver has permissions for the selected clan
+    2. Removes the clan role if user has it
+    3. Logs the action in the clan's approval channel
 
 ## Clan System
 
@@ -72,6 +88,14 @@ The bot includes a clan management system with the following features:
 - Clan approvers are notified via role mention
 - Approvers can accept/deny with buttons
 - Users receive DM notifications of request outcomes
+
+### Clan Access Management
+- Clan approvers can directly manage clan access using:
+  - `/grant-clan-access` to add users to clans
+  - `/revoke-clan-access` to remove users from clans
+- All actions are logged in clan approval channels
+- Clear error messages for invalid operations
+- Automatic validation of approver permissions
 
 ### Configuration
 Clans are configured in `config/clans.json` with:
