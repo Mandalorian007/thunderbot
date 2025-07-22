@@ -1,7 +1,6 @@
 import { 
     SlashCommandBuilder, 
     ChatInputCommandInteraction, 
-    MessageFlags,
     ButtonBuilder,
     ButtonStyle,
     ActionRowBuilder,
@@ -40,8 +39,7 @@ module.exports = {
 
             if (!clan) {
                 await interaction.reply({
-                    content: '❌ Invalid clan selected.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ Invalid clan selected.'
                 });
                 return;
             }
@@ -50,8 +48,7 @@ module.exports = {
             const member = interaction.member as GuildMember;
             if (member.roles.cache.has(clan.roleId)) {
                 await interaction.reply({
-                    content: `❌ You are already a member of ${clan.name}.`,
-                    flags: MessageFlags.Ephemeral
+                    content: `❌ You are already a member of ${clan.name}.`
                 });
                 return;
             }
@@ -61,8 +58,7 @@ module.exports = {
                 const approvalChannel = await interaction.guild?.channels.fetch(clan.approvalChannelId);
                 if (!approvalChannel?.isTextBased()) {
                     await interaction.reply({
-                        content: '❌ Could not find the approval channel. Please contact an administrator.',
-                        flags: MessageFlags.Ephemeral
+                        content: '❌ Could not find the approval channel. Please contact an administrator.'
                     });
                     return;
                 }
@@ -92,22 +88,19 @@ module.exports = {
 
                 // Simple acknowledgment
                 await interaction.reply({
-                    content: `✅ Your request to join ${clan.name} has been submitted for review.`,
-                    flags: MessageFlags.Ephemeral
+                    content: `✅ Your request to join ${clan.name} has been submitted for review.`
                 });
 
             } catch (error) {
                 console.error('Error processing clan join request:', error);
                 await interaction.reply({
-                    content: '❌ Failed to process your request. Please try again later.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ Failed to process your request. Please try again later.'
                 });
             }
         } catch (error) {
             console.error('Error processing clan join request:', error);
             await interaction.reply({
-                content: '❌ Failed to process your request. Please try again later.',
-                flags: MessageFlags.Ephemeral
+                content: '❌ Failed to process your request. Please try again later.'
             });
         }
     }
