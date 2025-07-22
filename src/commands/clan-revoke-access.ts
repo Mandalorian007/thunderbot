@@ -1,7 +1,6 @@
 import { 
     SlashCommandBuilder, 
     ChatInputCommandInteraction, 
-    MessageFlags,
     GuildMember
 } from 'discord.js';
 import { loadClanConfig } from '../utils/config';
@@ -31,8 +30,7 @@ module.exports = {
             const revoker = interaction.member as GuildMember;
             if (!revoker) {
                 await interaction.reply({
-                    content: '❌ Failed to fetch your member information.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ Failed to fetch your member information.'
                 });
                 return;
             }
@@ -45,8 +43,7 @@ module.exports = {
 
             if (accessibleClans.length === 0) {
                 await interaction.reply({
-                    content: '❌ You must have approver permissions for at least one clan to revoke access.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ You must have approver permissions for at least one clan to revoke access.'
                 });
                 return;
             }
@@ -58,8 +55,7 @@ module.exports = {
             const selectedClan = accessibleClans.find(c => c.id === clanId);
             if (!selectedClan) {
                 await interaction.reply({
-                    content: '❌ You must have approver permissions for this clan to revoke access.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ You must have approver permissions for this clan to revoke access.'
                 });
                 return;
             }
@@ -72,8 +68,7 @@ module.exports = {
 
             if (!targetMember) {
                 await interaction.reply({
-                    content: '❌ Failed to fetch target user information.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ Failed to fetch target user information.'
                 });
                 return;
             }
@@ -81,8 +76,7 @@ module.exports = {
             // Check if user has the role
             if (!targetMember.roles.cache.has(selectedClan.roleId)) {
                 await interaction.reply({
-                    content: `❌ ${targetUser.toString()} does not have the ${selectedClan.name} role.`,
-                    flags: MessageFlags.Ephemeral
+                    content: `❌ ${targetUser.toString()} does not have the ${selectedClan.name} role.`
                 });
                 return;
             }
@@ -91,8 +85,7 @@ module.exports = {
             try {
                 await targetMember.roles.remove(selectedClan.roleId);
                 await interaction.reply({
-                    content: `✅ Successfully revoked ${selectedClan.name} access from ${targetUser.toString()}.`,
-                    flags: MessageFlags.Ephemeral
+                    content: `✅ Successfully revoked ${selectedClan.name} access from ${targetUser.toString()}.`
                 });
 
                 // Log the action in the clan's approval channel
@@ -109,15 +102,13 @@ module.exports = {
             } catch (error) {
                 console.error('Failed to revoke clan role:', error);
                 await interaction.reply({
-                    content: '❌ Failed to revoke clan role. Please check bot permissions and try again.',
-                    flags: MessageFlags.Ephemeral
+                    content: '❌ Failed to revoke clan role. Please check bot permissions and try again.'
                 });
             }
         } catch (error) {
             console.error('Error in revoke-clan-access command:', error);
             await interaction.reply({
-                content: '❌ An error occurred while processing your request.',
-                flags: MessageFlags.Ephemeral
+                content: '❌ An error occurred while processing your request.'
             });
         }
     }
