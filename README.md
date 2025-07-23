@@ -50,15 +50,16 @@ pnpm run start
 Currently, the bot supports the following commands:
 
 - `/ping` - Check if the bot is responsive
-- `/join-clan` - Request to join a clan
+- `/clan-join-request` - Request to join a clan
   - Required options:
     - `clan` - Select which clan to join from available choices
     - `ign` - Your in-game name
   - Process:
-    1. Request is sent to clan's approval channel
-    2. Clan approvers can accept/deny the request
+    1. Request is sent to clan's approval channel with full details
+    2. Clan approvers can accept/deny the request using interactive buttons
     3. User receives a DM notification of acceptance/denial
-- `/grant-clan-access` - Grant clan access to a user (Clan Approvers only)
+    4. All responses are public for transparency and easier troubleshooting
+- `/clan-grant-access` - Grant clan access to a user (Clan Approvers only)
   - Required options:
     - `user` - The user to grant access to
     - `clan` - Select which clan to grant access to
@@ -66,7 +67,8 @@ Currently, the bot supports the following commands:
     1. Validates approver has permissions for the selected clan
     2. Grants the clan role if user doesn't already have it
     3. Logs the action in the clan's approval channel
-- `/revoke-clan-access` - Revoke clan access from a user (Clan Approvers only)
+    4. All responses are public for transparency
+- `/clan-revoke-access` - Revoke clan access from a user (Clan Approvers only)
   - Required options:
     - `user` - The user to revoke access from
     - `clan` - Select which clan to revoke access from
@@ -74,13 +76,14 @@ Currently, the bot supports the following commands:
     1. Validates approver has permissions for the selected clan
     2. Removes the clan role if user has it
     3. Logs the action in the clan's approval channel
+    4. All responses are public for transparency
 
 ## Clan System
 
 The bot includes a clan management system with the following features:
 
 ### Clan Join Requests
-- Users can request to join clans using `/join-clan`
+- Users can request to join clans using `/clan-join-request`
 - Requests include:
   - User's Discord mention
   - User's in-game name
@@ -109,14 +112,18 @@ Clans are configured in `config/clans.json` with:
 
 ```
 thunder-bot/
+├── config/
+│   └── clans.json    # Clan configuration (roles, channels, etc.)
 ├── src/
 │   ├── commands/     # Discord slash commands
 │   ├── events/       # Discord event handlers
-│   ├── spec/         # Specifications and documentation
+│   ├── types/        # TypeScript interfaces and types
+│   ├── utils/        # Configuration utilities
 │   ├── index.ts      # Main bot entry point
 │   └── deploy-commands.ts  # Command deployment script
-├── .env              # Environment variables
+├── .env              # Environment variables (not included in repo)
 ├── package.json      # Project dependencies and scripts
+├── pnpm-lock.yaml    # Package manager lock file
 └── tsconfig.json     # TypeScript configuration
 ```
 
