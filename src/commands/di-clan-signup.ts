@@ -6,7 +6,8 @@ import {
     ActionRowBuilder,
     MessageActionRowComponentBuilder,
     EmbedBuilder,
-    GuildMember
+    GuildMember,
+    MessageFlags
 } from 'discord.js';
 import { loadClanConfig } from '../utils/config';
 import { ClassKeys, getClassWithEmoji, ClassEmojis } from '../config/class-emojis';
@@ -39,10 +40,10 @@ module.exports = {
             const clan = config.clans.find(c => c.id === clanId);
 
             if (!clan) {
-                await interaction.reply({
-                    content: '❌ Invalid clan selected.',
-                    ephemeral: true
-                });
+                            await interaction.reply({
+                content: '❌ Invalid clan selected.',
+                flags: MessageFlags.Ephemeral
+            });
                 return;
             }
 
@@ -51,7 +52,7 @@ module.exports = {
             if (!member.roles.cache.has(clan.approverRoleId)) {
                 await interaction.reply({
                     content: `❌ You don't have permission to create signups for ${clan.name}.`,
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }
@@ -80,9 +81,8 @@ module.exports = {
 
             // Send initial message to get the message ID
             const response = await interaction.reply({
-                embeds: [embed],
-                fetchReply: true
-            });
+                embeds: [embed]
+            }).then(() => interaction.fetchReply());
 
             // Create class selection buttons (3 rows of buttons) with unique message ID
             const classButtons1 = new ActionRowBuilder<MessageActionRowComponentBuilder>();
@@ -146,7 +146,7 @@ module.exports = {
             console.error('Error creating clan signup:', error);
             await interaction.reply({
                 content: '❌ Failed to create signup. Please try again later.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
     }

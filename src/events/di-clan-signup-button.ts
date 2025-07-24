@@ -1,4 +1,4 @@
-import { ButtonInteraction, GuildMember, EmbedBuilder } from 'discord.js';
+import { ButtonInteraction, GuildMember, EmbedBuilder, MessageFlags } from 'discord.js';
 import { loadClanConfig } from '../utils/config';
 import { ClassKeys, getClassWithEmoji, type ClassName } from '../config/class-emojis';
 
@@ -16,7 +16,7 @@ module.exports = {
             if (messageId !== interaction.message.id) {
                 await interaction.reply({
                     content: '❌ This signup button is from a different message.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }
@@ -27,7 +27,7 @@ module.exports = {
             if (!clan) {
                 await interaction.reply({
                     content: '❌ Invalid clan signup.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }
@@ -37,7 +37,7 @@ module.exports = {
             if (!member.roles.cache.has(clan.roleId)) {
                 await interaction.reply({
                     content: `❌ You must be a member of ${clan.name} to participate in this signup.`,
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
                 return;
             }
@@ -56,7 +56,7 @@ module.exports = {
                 signups.delete(userId);
                 await interaction.reply({
                     content: '✅ Removed your signup.',
-                    ephemeral: true
+                    flags: MessageFlags.Ephemeral
                 });
             } else {
                 // User selected new option - update their signup
@@ -65,12 +65,12 @@ module.exports = {
                 if (selection === 'cant-make-it') {
                     await interaction.reply({
                         content: '✅ Marked as unable to attend.',
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 } else {
                     await interaction.reply({
                         content: `✅ Signed up as ${getClassWithEmoji(selection as ClassName)}.`,
-                        ephemeral: true
+                        flags: MessageFlags.Ephemeral
                     });
                 }
             }
@@ -89,7 +89,7 @@ module.exports = {
             console.error('Error handling signup button:', error);
             await interaction.reply({
                 content: '❌ Failed to update signup. Please try again.',
-                ephemeral: true
+                flags: MessageFlags.Ephemeral
             });
         }
     }
