@@ -65,7 +65,7 @@ module.exports = {
             // Add all class fields (always visible, even when empty)
             ClassKeys.forEach(className => {
                 embed.addFields({
-                    name: getClassWithEmoji(className),
+                    name: `${getClassWithEmoji(className)} (0)`,
                     value: '*No signups*',
                     inline: true
                 });
@@ -73,7 +73,7 @@ module.exports = {
 
             // Add "Can't make it" field
             embed.addFields({
-                name: '❌ Can\'t Make It',
+                name: '❌ Can\'t Make It (0)',
                 value: '*No signups*',
                 inline: true
             });
@@ -91,10 +91,21 @@ module.exports = {
 
             // Split classes into rows (3-3-3) - just emojis
             ClassKeys.forEach((className, index) => {
+                // Extract emoji ID from the emoji string for proper button display
+                const emojiMatch = ClassEmojis[className].match(/:(\w+):(\d+)>/);
                 const button = new ButtonBuilder()
                     .setCustomId(`signup:${response.id}:${clanId}:${className}`)
-                    .setLabel(ClassEmojis[className])
                     .setStyle(ButtonStyle.Secondary);
+                
+                if (emojiMatch) {
+                    button.setEmoji({
+                        name: emojiMatch[1],
+                        id: emojiMatch[2]
+                    });
+                } else {
+                    // Fallback to label if emoji parsing fails
+                    button.setLabel(ClassEmojis[className]);
+                }
 
                 if (index < 3) {
                     classButtons1.addComponents(button);
@@ -108,7 +119,7 @@ module.exports = {
             // Add "Can't make it" button to the third row
             const cantMakeItButton = new ButtonBuilder()
                 .setCustomId(`signup:${response.id}:${clanId}:cant-make-it`)
-                .setLabel('❌')
+                .setEmoji('❌')
                 .setStyle(ButtonStyle.Danger);
 
             classButtons3.addComponents(cantMakeItButton);

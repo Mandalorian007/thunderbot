@@ -107,7 +107,7 @@ function parseSignupsFromFields(fields: any[]): Map<string, ClassName | 'cant-ma
             continue;
         }
         
-        // Determine class from field name
+        // Determine class from field name (strip count info)
         let className: ClassName | 'cant-make-it' | null = null;
         
         if (fieldName.includes("Can't Make It")) {
@@ -155,7 +155,7 @@ function createSignupEmbed(title: string, signups: Map<string, ClassName | 'cant
         }
         
         embed.addFields({
-            name: getClassWithEmoji(className),
+            name: `${getClassWithEmoji(className)} (${classMembers.length})`,
             value: classMembers.length > 0 ? classMembers.join('\n') : '*No signups*',
             inline: true
         });
@@ -170,7 +170,7 @@ function createSignupEmbed(title: string, signups: Map<string, ClassName | 'cant
     }
     
     embed.addFields({
-        name: '❌ Can\'t Make It',
+        name: `❌ Can't Make It (${cantMakeIt.length})`,
         value: cantMakeIt.length > 0 ? cantMakeIt.join('\n') : '*No signups*',
         inline: true
     });
