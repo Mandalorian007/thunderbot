@@ -1,7 +1,6 @@
 import { 
     SlashCommandBuilder, 
     ChatInputCommandInteraction,
-    AutocompleteInteraction,
     GuildMember,
     EmbedBuilder
 } from 'discord.js';
@@ -15,24 +14,11 @@ module.exports = {
             option.setName('clan')
                 .setDescription('The clan you want to leave')
                 .setRequired(true)
-                .setAutocomplete(true)
+                .addChoices(...loadClanConfig().clans.map(clan => ({
+                    name: clan.name,
+                    value: clan.id
+                })))
         ),
-
-    async autocomplete(interaction: AutocompleteInteraction) {
-        try {
-            const config = loadClanConfig();
-            
-            const choices = config.clans.map(clan => ({
-                name: clan.name,
-                value: clan.id
-            }));
-
-            await interaction.respond(choices);
-        } catch (error) {
-            console.error('Error in clan-leave autocomplete:', error);
-            await interaction.respond([]);
-        }
-    },
 
     async execute(interaction: ChatInputCommandInteraction) {
         try {
