@@ -20,39 +20,9 @@ module.exports = {
 
     async autocomplete(interaction: AutocompleteInteraction) {
         try {
-            // Fetch the member with roles to ensure we have complete data
-            const guild = interaction.guild;
-            if (!guild || !interaction.user) {
-                await interaction.respond([]);
-                return;
-            }
-
-            const member = await guild.members.fetch(interaction.user.id).catch(() => null);
-            if (!member) {
-                await interaction.respond([]);
-                return;
-            }
-
             const config = loadClanConfig();
-            console.log('Available clans:', config.clans.map(c => ({ name: c.name, id: c.id, roleId: c.roleId })));
-            console.log('User roles:', Array.from(member.roles.cache.keys()));
             
-            const userClans = config.clans.filter(clan => {
-                const hasRole = member.roles.cache.has(clan.roleId);
-                console.log(`Checking clan ${clan.name} (roleId: ${clan.roleId}): ${hasRole}`);
-                return hasRole;
-            });
-
-            console.log('Filtered user clans:', userClans.map(c => c.name));
-
-            if (userClans.length === 0) {
-                await interaction.respond([
-                    { name: 'You are not currently in any clans', value: 'none' }
-                ]);
-                return;
-            }
-
-            const choices = userClans.map(clan => ({
+            const choices = config.clans.map(clan => ({
                 name: clan.name,
                 value: clan.id
             }));
@@ -76,13 +46,7 @@ module.exports = {
                 return;
             }
 
-            // Handle the "none" case from autocomplete
-            if (clanId === 'none') {
-                await interaction.reply({
-                    content: '❌ You are not currently in any clans.'
-                });
-                return;
-            }
+
 
             const config = loadClanConfig();
             const clan = config.clans.find(c => c.id === clanId);
