@@ -20,16 +20,30 @@ module.exports = {
 
     async autocomplete(interaction: AutocompleteInteraction) {
         try {
-            const member = interaction.member as GuildMember;
+            // Fetch the member with roles to ensure we have complete data
+            const guild = interaction.guild;
+            if (!guild || !interaction.user) {
+                await interaction.respond([]);
+                return;
+            }
+
+            const member = await guild.members.fetch(interaction.user.id).catch(() => null);
             if (!member) {
                 await interaction.respond([]);
                 return;
             }
 
             const config = loadClanConfig();
-            const userClans = config.clans.filter(clan => 
-                member.roles.cache.has(clan.roleId)
-            );
+            console.log('Available clans:', config.clans.map(c => ({ name: c.name, id: c.id, roleId: c.roleId })));
+            console.log('User roles:', Array.from(member.roles.cache.keys()));
+            
+            const userClans = config.clans.filter(clan => {
+                const hasRole = member.roles.cache.has(clan.roleId);
+                console.log(`Checking clan ${clan.name} (roleId: ${clan.roleId}): ${hasRole}`);
+                return hasRole;
+            });
+
+            console.log('Filtered user clans:', userClans.map(c => c.name));
 
             if (userClans.length === 0) {
                 await interaction.respond([
