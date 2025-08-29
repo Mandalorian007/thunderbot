@@ -60,8 +60,7 @@ module.exports = {
             // Create initial embed with all class fields
             const embed = new EmbedBuilder()
                 .setTitle(`${clan.name} - ${eventName}`)
-                .setColor(0x00ff00)
-                .setTimestamp();
+                .setColor(0x00ff00);
 
             // Add all class fields (always visible, even when empty)
             ClassKeys.forEach(className => {

@@ -142,8 +142,7 @@ function parseSignupsFromFields(fields: any[]): Map<string, ClassName | 'cant-ma
 function createSignupEmbed(title: string, signups: Map<string, ClassName | 'cant-make-it'>): EmbedBuilder {
     const embed = new EmbedBuilder()
         .setTitle(title)
-        .setColor(0x00ff00)
-        .setTimestamp();
+        .setColor(0x00ff00);
 
     // Build all render arrays and count as we go
     let totalAttending = 0;
