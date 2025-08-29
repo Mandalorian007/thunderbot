@@ -145,6 +145,9 @@ function createSignupEmbed(title: string, signups: Map<string, ClassName | 'cant
         .setColor(0x00ff00)
         .setTimestamp();
 
+    // Build all render arrays and count as we go
+    let totalAttending = 0;
+
     // Add all class fields (always visible)
     ClassKeys.forEach(className => {
         const classMembers: string[] = [];
@@ -153,6 +156,9 @@ function createSignupEmbed(title: string, signups: Map<string, ClassName | 'cant
                 classMembers.push(`<@${userId}>`);
             }
         }
+        
+        // Count attending users as we build the arrays
+        totalAttending += classMembers.length;
         
         embed.addFields({
             name: `${getClassWithEmoji(className)} (${classMembers.length})`,
@@ -173,6 +179,11 @@ function createSignupEmbed(title: string, signups: Map<string, ClassName | 'cant
         name: `❌ Can't Make It (${cantMakeIt.length})`,
         value: cantMakeIt.length > 0 ? cantMakeIt.join('\n') : '*No signups*',
         inline: true
+    });
+
+    // Count what we actually rendered
+    embed.setFooter({
+        text: `📊 ${totalAttending} attending • ${cantMakeIt.length} can't make it`
     });
 
     return embed;

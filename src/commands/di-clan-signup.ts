@@ -79,6 +79,11 @@ module.exports = {
                 inline: true
             });
 
+            // Add footer with attendance counts
+            embed.setFooter({
+                text: '📊 0 attending • 0 can\'t make it'
+            });
+
             // Send initial message to get the message ID
             const response = await interaction.reply({
                 embeds: [embed]
