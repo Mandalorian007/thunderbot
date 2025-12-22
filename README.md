@@ -4,7 +4,7 @@ A Discord bot built with Discord.js v14 and TypeScript, designed to enhance the 
 
 ## Prerequisites
 
-- Node.js (v16.9.0 or higher)
+- Node.js (v18.0.0 or higher, v22+ LTS recommended)
 - pnpm (v8.0.0 or higher)
 - Discord Bot Token ([Create a bot here](https://discord.com/developers/applications))
 - Discord Server with admin permissions
