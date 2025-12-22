@@ -1,32 +1,11 @@
 {
   "clans": [
     {
-      "id": "di-inq",
-      "name": "DI: Inquisition Clan",
+      "id": "di-hxi-inq",
+      "name": "DI: HX INQ Clan",
       "roleId": "1156924642301333504",
-      "approverRoleId": "1117433775081660446",
+      "approverRoleId": "1451743120550133771",
       "approvalChannelId": "1345082918141431921"
-    },
-    {
-      "id": "di-ser",
-      "name": "DI: HX 华夏 / Serenity Clan",
-      "roleId": "1156924764246528011",
-      "approverRoleId": "1242171895793844244",
-      "approvalChannelId": "1345117298565976168"
-    },
-    {
-      "id": "di-myth",
-      "name": "DI: Mythic Clan",
-      "roleId": "1336813174011461636",
-      "approverRoleId": "1336813257922445334",
-      "approvalChannelId": "1345118388782895145"
-    },
-    {
-      "id": "di-unity-omega",
-      "name": "DI: Unity Omega Clan",
-      "roleId": "1378376401102704801",
-      "approverRoleId": "1378376256336433192",
-      "approvalChannelId": "1378377454716063784"
     }
   ]
 } 
