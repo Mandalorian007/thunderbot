@@ -255,5 +255,179 @@ def models():
     click.echo("Use: uv run img generate 'prompt' -m <model>")
 
 
+def convert_to_emoji_name(filename: str) -> str:
+    """Convert underscore filename to hyphen emoji name convention."""
+    name = Path(filename).stem
+    ext = Path(filename).suffix
+    # Replace underscores with hyphens
+    emoji_name = name.replace("_", "-")
+    return f"{emoji_name}{ext}"
+
+
+def validate_image_name(filename: str) -> bool:
+    """Validate image follows naming convention (at least 2 words with underscores)."""
+    name = Path(filename).stem
+    parts = name.split("_")
+    return len(parts) >= 2
+
+
+@cli.command()
+@click.argument("input_image", type=click.Path(exists=True))
+@click.option(
+    "-o", "--output",
+    help="Output path. Auto-generated from input name if not specified."
+)
+@click.option(
+    "-s", "--size",
+    type=int,
+    default=128,
+    help="Emoji size in pixels (default: 128, Discord standard)"
+)
+@click.option(
+    "--max-size",
+    type=int,
+    default=256,
+    help="Max file size in KB (default: 256, Discord limit)"
+)
+@click.option(
+    "-f", "--format",
+    "output_format",
+    type=click.Choice(["png", "gif", "webp"]),
+    default=None,
+    help="Output format (default: preserve original, prefer PNG for transparency)"
+)
+def emojify(
+    input_image: str,
+    output: str | None,
+    size: int,
+    max_size: int,
+    output_format: str | None,
+):
+    """
+    Convert an image to Discord emoji format.
+
+    Resizes image to Discord emoji specs and applies naming convention.
+
+    \b
+    NAMING CONVENTION
+    -----------------
+    Source images:  word_word.png     (underscores, at least 2 words)
+    Emoji output:   word-word.png     (hyphens)
+
+    \b
+    EXAMPLES
+    --------
+    uv run img emojify town_guard.png
+    uv run img emojify my_cool_icon.png -s 64
+    uv run img emojify large_image.png --max-size 128
+    uv run img emojify source_art.png -o custom-name.png
+
+    \b
+    DISCORD SPECS
+    -------------
+    - Recommended: 128x128 pixels
+    - Max file size: 256KB (static), 512KB (animated)
+    - Formats: PNG, GIF, WEBP (PNG best for transparency)
+    """
+    from PIL import Image
+    import io
+
+    input_path = Path(input_image)
+
+    # Validate naming convention (warn but don't block)
+    if not validate_image_name(input_path.name):
+        click.echo(
+            f"Warning: '{input_path.name}' doesn't follow naming convention "
+            "(should be word_word.ext with at least 2 words)",
+            err=True
+        )
+
+    # Determine output path
+    if output:
+        output_path = Path(output)
+    else:
+        emoji_name = convert_to_emoji_name(input_path.name)
+        output_path = input_path.parent / emoji_name
+
+    # Determine format
+    if output_format:
+        fmt = output_format.upper()
+        if fmt == "WEBP":
+            fmt = "WEBP"
+        output_path = output_path.with_suffix(f".{output_format}")
+    else:
+        fmt = input_path.suffix.upper().lstrip(".")
+        if fmt == "JPG":
+            fmt = "JPEG"
+        elif fmt not in ("PNG", "GIF", "WEBP"):
+            fmt = "PNG"
+            output_path = output_path.with_suffix(".png")
+
+    try:
+        # Open and resize image
+        with Image.open(input_path) as img:
+            # Preserve transparency
+            if img.mode in ("RGBA", "LA", "P"):
+                if fmt == "PNG" or fmt == "WEBP":
+                    img = img.convert("RGBA")
+                else:
+                    # Can't preserve transparency in GIF well, convert
+                    img = img.convert("RGBA")
+            elif img.mode != "RGB":
+                img = img.convert("RGB")
+
+            # Resize with high-quality resampling
+            img_resized = img.resize((size, size), Image.Resampling.LANCZOS)
+
+            # Save with optimization
+            buffer = io.BytesIO()
+            save_kwargs = {"format": fmt}
+
+            if fmt == "PNG":
+                save_kwargs["optimize"] = True
+            elif fmt == "WEBP":
+                save_kwargs["quality"] = 90
+                save_kwargs["method"] = 6
+            elif fmt == "GIF":
+                save_kwargs["optimize"] = True
+
+            img_resized.save(buffer, **save_kwargs)
+
+            # Check file size and reduce quality if needed
+            max_bytes = max_size * 1024
+            quality = 90
+
+            while buffer.tell() > max_bytes and quality > 20:
+                buffer = io.BytesIO()
+                if fmt == "PNG":
+                    # PNG doesn't have quality, try quantizing colors
+                    img_quantized = img_resized.quantize(colors=256)
+                    img_quantized.save(buffer, format=fmt, optimize=True)
+                    break
+                elif fmt in ("WEBP", "GIF"):
+                    quality -= 10
+                    save_kwargs["quality"] = quality
+                    img_resized.save(buffer, **save_kwargs)
+
+            # Write final output
+            with open(output_path, "wb") as f:
+                f.write(buffer.getvalue())
+
+            final_size = buffer.tell()
+            click.echo(f"Saved: {output_path}")
+            click.echo(f"Size: {size}x{size}px, {final_size / 1024:.1f}KB")
+
+            if final_size > max_bytes:
+                click.echo(
+                    f"Warning: File size ({final_size / 1024:.1f}KB) exceeds "
+                    f"target ({max_size}KB)",
+                    err=True
+                )
+
+    except Exception as e:
+        click.echo(f"Error: {e}", err=True)
+        sys.exit(1)
+
+
 if __name__ == "__main__":
     cli()
